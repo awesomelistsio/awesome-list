@@ -51,6 +51,4 @@ This template includes GitHub Actions workflows for automated link checking:
 
 You can tune link checking behavior in `lychee.toml`.
 
-## Maintenance
-
-- Automated checks: link checking (PR + weekly), duplicate URL detection, and a lightweight Awesome List lint.
+Automated checks: link checking (PR + weekly), duplicate URL detection, and a lightweight Awesome List lint.
