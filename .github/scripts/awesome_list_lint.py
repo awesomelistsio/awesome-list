@@ -1,20 +1,25 @@
 #!/usr/bin/env python3
 """
-Awesome List lint (practical, low-noise)
+Awesome List lint (strict on resources, permissive on TOC)
 
 Errors:
 - README.md missing
-- Missing "Contribute"/"Contributing" heading (accepts either, plus contribut* variants)
+- Missing "Contribute"/"Contributing" heading (accepts contribut* variants)
 - Missing "License" heading
 - TAB characters in README.md
-- Trailing whitespace on resource-entry list lines
-- Resource entry bullets must match: - [Name](URL) — Description  OR  - [Name](URL) - Description
+- Trailing whitespace on list lines that start with "- [" or "* ["
+- External resource entries must be in the format:
+    - [Name](https://example.com) — Short, neutral description.
+  (also allows '-' instead of '—')
 
-Resource entry bullet definition:
-- A markdown list line that starts with "- [" or "* ["
+Allows:
+- TOC / internal anchor bullets:
+    - [Section](#section)
+  (no description required)
 
-Non-resource bullets (e.g., in Contribute/Notes) are ignored.
-Code blocks are ignored.
+Notes:
+- Ignores code blocks.
+- Duplicate headings are warnings, not failures.
 """
 from __future__ import annotations
 
@@ -25,10 +30,11 @@ from collections import Counter
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.+?)\s*$")
 CODE_FENCE_RE = re.compile(r"^\s*```")
 
-# Enforce the standard Awesome-list-ish entry pattern:
-# - [Name](https://example.com) — Short description
-# Also allow '-' as the separator.
-RESOURCE_BULLET_RE = re.compile(
+# Basic markdown bullet + link capture
+BULLET_LINK_RE = re.compile(r"^[-*]\s+\[[^\]]+\]\(([^)]+)\)\s*$")
+
+# External resource entry with description
+RESOURCE_WITH_DESC_RE = re.compile(
     r"^[-*]\s+\[[^\]]+\]\((https?://[^\s)]+)\)\s*(—|-)\s+.+"
 )
 
@@ -50,7 +56,6 @@ def main() -> int:
         return 1
 
     text = readme.read_text(encoding="utf-8", errors="ignore")
-
     if "\t" in text:
         print("ERROR: README.md contains TAB characters. Replace tabs with spaces.")
         return 1
@@ -58,7 +63,7 @@ def main() -> int:
     lines = text.splitlines()
     noncode = strip_code_blocks(lines)
 
-    # Collect headings (non-fatal duplicates warning)
+    # headings
     headings: list[str] = []
     for _ln, line in noncode:
         m = HEADING_RE.match(line)
@@ -67,7 +72,6 @@ def main() -> int:
 
     lower = [h.lower().strip() for h in headings]
 
-    # Accept "Contribute" or "Contributing" (and contribut* variants)
     if not any(h in ("contribute", "contributing") or "contribut" in h for h in lower):
         print("ERROR: Missing a 'Contribute'/'Contributing' section heading in README.md.")
         return 1
@@ -90,21 +94,33 @@ def main() -> int:
     for ln, line in noncode:
         s = line.rstrip("\n")
 
-        # Only lint “resource entry” bullets.
-        if s.startswith("- [") or s.startswith("* ["):
-            # Trailing whitespace check on resource lines
-            if s != s.rstrip():
-                print(f"ERROR: Trailing whitespace on resource entry line {ln}.")
-                errors += 1
+        # Only lint bullets that look like markdown-link bullets
+        if not (s.startswith("- [") or s.startswith("* [")):
+            continue
 
-            # Require standard entry structure
-            if not RESOURCE_BULLET_RE.match(s):
-                print(f"ERROR: Resource entry bullet malformed on line {ln}. Expected:")
-                print("  - [Name](https://example.com) — Short, neutral description.")
-                print("or")
-                print("  - [Name](https://example.com) - Short, neutral description.")
-                print(f"  {s}")
-                errors += 1
+        # Trailing whitespace (fail)
+        if s != s.rstrip():
+            print(f"ERROR: Trailing whitespace on list line {ln}.")
+            errors += 1
+
+        # If it's exactly a TOC-style bullet like "- [Section](#section)", allow it.
+        m = BULLET_LINK_RE.match(s.strip())
+        if m:
+            url = m.group(1).strip()
+            if url.startswith("#"):
+                continue  # TOC anchor bullet is valid
+
+        # For external resources, require description format
+        if s.find("(http://") != -1 or s.find("(https://") != -1:
+            if RESOURCE_WITH_DESC_RE.match(s):
+                continue
+
+            print(f"ERROR: Resource entry bullet malformed on line {ln}. Expected:")
+            print("  - [Name](https://example.com) — Short, neutral description.")
+            print("or")
+            print("  - [Name](https://example.com) - Short, neutral description.")
+            print(f"  {s}")
+            errors += 1
 
     if errors:
         print(f"Found {errors} lint error(s).")
