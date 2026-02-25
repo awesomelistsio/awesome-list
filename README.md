@@ -40,3 +40,17 @@ Contributions are welcome!
 ## License
 
 [![CC0](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-sa.svg)](http://creativecommons.org/licenses/by-sa/4.0/)
+
+
+## Maintenance
+
+This template includes GitHub Actions workflows for automated link checking:
+
+- **Links (PR)** checks Markdown links on pull requests.
+- **Links (Scheduled → Issue)** runs weekly and opens or updates an issue if it finds broken links.
+
+You can tune link checking behavior in `lychee.toml`.
+
+## Maintenance
+
+- Automated checks: link checking (PR + weekly), duplicate URL detection, and a lightweight Awesome List lint.
