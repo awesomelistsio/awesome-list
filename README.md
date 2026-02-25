@@ -16,22 +16,22 @@
 
 ## Section
 
-About this section. Optional. Keep this short and focus on the list.
+About this section. Keep this short and focused on what the resources represent.
 
-- [List item](http://example.com)
-- [List item](http://example.com)
+- [Example Project One](https://example.com/project-one) — Short, neutral description of what this resource does.
+- [Example Project Two](https://example.com/project-two) — Short, neutral description of what this resource does.
 
 ## Another Section
 
 ### Subsection
 
-- [List item](http://example.com)
-- [List item](http://example.com)
+- [Example Tool One](https://example.com/tool-one) — Short, neutral description of what this resource does.
+- [Example Tool Two](https://example.com/tool-two) — Short, neutral description of what this resource does.
 
 ## Related Awesome Lists
 
-- [List item](http://example.com)
-- [List item](http://example.com)
+- [Awesome Example One](https://example.com/awesome-one) — Short, neutral description of the related list.
+- [Awesome Example Two](https://example.com/awesome-two) — Short, neutral description of the related list.
   
 ## Contribute
 
