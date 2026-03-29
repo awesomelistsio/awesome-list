@@ -43,7 +43,6 @@ Pull requests that do not adhere to the contribution guidelines may be closed.
 
 [![CC0](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-sa.svg)](http://creativecommons.org/licenses/by-sa/4.0/)
 
-
 ## Maintenance
 
 This template includes GitHub Actions workflows for automated link checking:
