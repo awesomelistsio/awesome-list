@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this template, please cite it using the metadata below."
+title: "Awesome Lists Template"
+abstract: "A reusable template repository for creating high-quality Awesome Lists, including standardized structure, contribution guidelines, licensing, formatting conventions, and best practices for long-term maintainability."
+authors:
+  - family-names: "Himpfen"
+    given-names: "Brandon"
+license: "CC0-1.0"
+repository-code: "https://github.com/brandonhimpfen/awesome-lists-template"
+keywords:
+  - awesome list
+  - template
+  - open source
+  - curation
+  - markdown
+  - GitHub
+  - documentation
+  - developer resources
+  - community
+  - knowledge management
